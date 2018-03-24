@@ -1,0 +1,8 @@
+[Unit]
+Description=gunicorn socket for poznavayka project
+
+[Socket]
+ListenStream=/run/gunicorn/poznavayka_socket
+
+[Install]
+WantedBy=sockets.target

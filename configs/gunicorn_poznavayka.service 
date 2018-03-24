@@ -1,0 +1,27 @@
+[Unit]
+Description=gunicorn daemon for poznavayka project
+Requires=gunicorn_poznavayka.socket
+After=network.target
+
+[Service]
+PermissionsStartOnly=True
+User=eldos
+Group=www-data
+RuntimeDirectory=gunicorn
+RuntimeDirectoryMode=0775
+PIDFile=/run/gunicorn/pid
+WorkingDirectory=/home/eldos/poznavayka
+ExecStart=/home/eldos/poznavayka/env/bin/gunicorn \
+          --access-logfile /home/eldos/poznavayka/logs/access.log \
+          --error-logfile /home/eldos/poznavayka/logs/error.log \
+          --pid /run/gunicorn/pid   \
+          --env DJANGO_SETTINGS_MODULE=mysite.settings_prod \
+          --workers 3 \
+          --bind unix:/run/gunicorn/poznavayka_socket
+          mysite.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
